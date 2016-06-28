@@ -125,7 +125,7 @@ function MqttSwitchAccessory(log, config) {
 	});
     this.client.subscribe(this.topicStatusGet);
     this.client.subscribe(this.topicTemperature);
-    //this.client.subscribe(this.topicHumidity);
+    this.client.subscribe(this.topicHumidity);
 }
 
 
