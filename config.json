@@ -1,0 +1,32 @@
+{
+    "bridge": {
+        "name": "Homebridge",
+        "username": "CC:22:3D:E3:CE:30",
+        "port": 51826,
+        "pin": "031-45-154"
+    },
+
+    "description": "This is an example configuration file. You can use this as a template for creating your own configuration file.",
+
+    "platforms": [
+    ],
+    "accessories": [
+    	{
+            "accessory": "mqttswitch",
+            "name": "ESP8266-Console",
+ 	    	"model":"nodemcu",
+ 	    	"manufacturer":"An00biS47",
+ 	    	"serial":"00001",
+            "url": "mqtt://pi2.local:1883",
+			"username": "esp",
+            "password": "esp8266",
+ 			"caption": "ESP8266",
+ 			"topics": {
+ 				"statusGet": 	"outTopic",
+ 				"statusSet": 	"inTopic",
+                "temperature": 	"outTemp",
+                "humdity": 	    "outHum"
+ 			}
+    	}
+    ]
+}
