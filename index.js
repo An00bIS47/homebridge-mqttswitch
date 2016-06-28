@@ -92,12 +92,12 @@ function MqttSwitchAccessory(log, config) {
         this.temperatureService = new Service.TemperatureSensor(this.name);
         this.temperatureService
                 .getCharacteristic(Characteristic.CurrentTemperature)
-                .on('get', this.getState.bind(this));
+                .on('get', this.getTemp.bind(this));
 
         this.humidityService = new Service.HumiditySensor(this.name);
         this.humidityService
                 .getCharacteristic(Characteristic.CurrentRelativeHumidity)
-                .on('get', this.getState.bind(this));
+                .on('get', this.getHum.bind(this));
 
 	// connect to MQTT broker
 	this.client = mqtt.connect(this.url, this.options);
@@ -138,6 +138,14 @@ MqttSwitchAccessory.prototype = {
 
 	getStatus: function(callback) {
     	callback(null, this.switchStatus);
+	},
+
+    getTemp: function(callback) {
+    	callback(null, this.temperature);
+	},
+
+    getHum: function(callback) {
+    	callback(null, this.humidity);
 	},
 
 	setStatus: function(status, callback, context) {
