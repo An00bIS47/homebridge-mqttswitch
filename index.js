@@ -73,27 +73,29 @@ function MqttSwitchAccessory(log, config) {
     this.temperature = 0.0;
     this.humidity = 0.0;
 
-    informationService = new Service.AccessoryInformation();
+    this.informationService = new Service.AccessoryInformation();
 
-    informationService
+    this.informationService
     .setCharacteristic(Characteristic.Name, this.name)
     .setCharacteristic(Characteristic.Manufacturer, this.manufacturer)
     .setCharacteristic(Characteristic.Model, this.model)
     .setCharacteristic(Characteristic.SerialNumber, this.serial);
 
-    switchService = new Service.Switch(this.name);
-    switchService
+
+
+    this.switchService = new Service.Switch(this.name);
+    this.switchService
         .getCharacteristic(Characteristic.On)
         .on('get', this.getStatus.bind(this))
         .on('set', this.setStatus.bind(this));
 
-        temperatureService = new Service.TemperatureSensor(this.name);
-        temperatureService
+        this.temperatureService = new Service.TemperatureSensor(this.name);
+        this.temperatureService
                 .getCharacteristic(Characteristic.CurrentTemperature)
                 .on('get', this.getState.bind(this));
 
-        humidityService = new Service.HumiditySensor(this.name);
-        humidityService
+        this.humidityService = new Service.HumiditySensor(this.name);
+        this.humidityService
                 .getCharacteristic(Characteristic.CurrentRelativeHumidity)
                 .on('get', this.getState.bind(this));
 
@@ -108,17 +110,17 @@ function MqttSwitchAccessory(log, config) {
 		if (topic == that.topicStatusGet) {
 			var status = message.toString();
 			that.switchStatus = (status == "true" ? true : false);
-		   	switchService.getCharacteristic(Characteristic.On).setValue(that.switchStatus, undefined, 'fromSetValue');
+		   	that.switchService.getCharacteristic(Characteristic.On).setValue(that.switchStatus, undefined, 'fromSetValue');
 		}
         if (topic == that.topicTemperature) {
             var status = message.toString();
 			that.humidity = status;
-            temperatureService.setCharacteristic(Characteristic.CurrentTemperature, that.temperature );
+            that.temperatureService.setCharacteristic(Characteristic.CurrentTemperature, that.temperature );
         }
         if (topic == that.topicHumidity) {
             var status = message.toString();
 			that.humidity = status;
-            humiditySensor.setCharacteristic(Characteristic.CurrentRelativeHumidity, that.humidity);
+            that.humiditySensor.setCharacteristic(Characteristic.CurrentRelativeHumidity, that.humidity);
         }
 	});
     this.client.subscribe(this.topicStatusGet);
@@ -147,6 +149,6 @@ MqttSwitchAccessory.prototype = {
 	},
 
 	getServices: function() {
-		return [informationService, switchService, temperatureService, humidityService];
+		return [this.informationService, this.switchService, this.temperatureService, this.humidityService];
 	}
 };
