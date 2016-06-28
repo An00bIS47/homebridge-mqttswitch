@@ -72,6 +72,12 @@ function MqttSwitchAccessory(log, config) {
     this.temperature = 0.0;
     this.humidity = 0.0;
 
+    switchService = new Service.Switch(this.name);
+    switchService
+        .getCharacteristic(Characteristic.On)
+        .on('get', this.getStatus.bind(this))
+        .on('set', this.setStatus.bind(this));
+        
 	// connect to MQTT broker
 	this.client = mqtt.connect(this.url, this.options);
 	var that = this;
@@ -125,11 +131,7 @@ MqttSwitchAccessory.prototype = {
 		.setCharacteristic(Characteristic.SerialNumber, this.serial);
 
 
-        switchService = new Service.Switch(this.name);
-        switchService
-            .getCharacteristic(Characteristic.On)
-            .on('get', this.getStatus.bind(this))
-            .on('set', this.setStatus.bind(this));
+
 
         temperatureService = new Service.TemperatureSensor(this.name);
         temperatureService
