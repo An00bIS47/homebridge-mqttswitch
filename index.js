@@ -23,17 +23,6 @@
 
 var Service, Characteristic;
 var mqtt = require("mqtt");
-var temperatureService;
-var humidityService;
-var switchService;
-var informationService;
-
-module.exports = function(homebridge) {
-  	Service = homebridge.hap.Service;
-  	Characteristic = homebridge.hap.Characteristic;
-
-  	homebridge.registerAccessory("homebridge-mqttswitch", "mqttswitch", MqttSwitchAccessory);
-}
 
 
 function MqttSwitchAccessory(log, config) {
@@ -66,38 +55,13 @@ function MqttSwitchAccessory(log, config) {
 	this.topicStatusGet	= config["topics"].statusGet;
 	this.topicStatusSet	= config["topics"].statusSet;
 
-    this.topicTemperature	= config["topics"].temperature;
-    this.topicHumidity = config["topics"].humidity;
-
 	this.switchStatus = false;
-    this.temperature = 0.0;
-    this.humidity = 0.0;
 
-    this.informationService = new Service.AccessoryInformation();
-
-    this.informationService
-    .setCharacteristic(Characteristic.Name, this.name)
-    .setCharacteristic(Characteristic.Manufacturer, this.manufacturer)
-    .setCharacteristic(Characteristic.Model, this.model)
-    .setCharacteristic(Characteristic.SerialNumber, this.serial);
-
-
-
-    this.switchService = new Service.Switch(this.name);
-    this.switchService
-        .getCharacteristic(Characteristic.On)
-        .on('get', this.getStatus.bind(this))
-        .on('set', this.setStatus.bind(this));
-
-        this.temperatureService = new Service.TemperatureSensor(this.name);
-        this.temperatureService
-                .getCharacteristic(Characteristic.CurrentTemperature)
-                .on('get', this.getTemp.bind(this));
-
-        this.humidityService = new Service.HumiditySensor(this.name);
-        this.humidityService
-                .getCharacteristic(Characteristic.CurrentRelativeHumidity)
-                .on('get', this.getHum.bind(this));
+	this.service = new Service.Switch(this.name);
+  	this.service
+    	.getCharacteristic(Characteristic.On)
+    	.on('get', this.getStatus.bind(this))
+    	.on('set', this.setStatus.bind(this));
 
 	// connect to MQTT broker
 	this.client = mqtt.connect(this.url, this.options);
@@ -110,25 +74,18 @@ function MqttSwitchAccessory(log, config) {
 		if (topic == that.topicStatusGet) {
 			var status = message.toString();
 			that.switchStatus = (status == "true" ? true : false);
-		   	that.switchService.getCharacteristic(Characteristic.On).setValue(that.switchStatus, undefined, 'fromSetValue');
+		   	that.service.getCharacteristic(Characteristic.On).setValue(that.switchStatus, undefined, 'fromSetValue');
 		}
-        if (topic == that.topicTemperature) {
-            var status = message.toString();
-			that.humidity = status;
-            that.temperatureService.setCharacteristic(Characteristic.CurrentTemperature, that.temperature );
-        }
-        if (topic == that.topicHumidity) {
-            var status = message.toString();
-			that.humidity = status;
-            that.humiditySensor.setCharacteristic(Characteristic.CurrentRelativeHumidity, that.humidity);
-        }
 	});
     this.client.subscribe(this.topicStatusGet);
-    this.client.subscribe(this.topicTemperature);
-    //this.client.subscribe(this.topicHumidity);
 }
 
+module.exports = function(homebridge) {
+  	Service = homebridge.hap.Service;
+  	Characteristic = homebridge.hap.Characteristic;
 
+  	homebridge.registerAccessory("homebridge-mqttswitch", "mqttswitch", MqttSwitchAccessory);
+}
 
 MqttSwitchAccessory.prototype = {
     identify: function (callback) {
@@ -140,14 +97,6 @@ MqttSwitchAccessory.prototype = {
     	callback(null, this.switchStatus);
 	},
 
-    getTemp: function(callback) {
-    	callback(null, this.temperature);
-	},
-
-    getHum: function(callback) {
-    	callback(null, this.humidity);
-	},
-
 	setStatus: function(status, callback, context) {
 		if(context !== 'fromSetValue') {
 			this.switchStatus = status;
@@ -157,6 +106,13 @@ MqttSwitchAccessory.prototype = {
 	},
 
 	getServices: function() {
-		return [this.informationService, this.switchService, this.temperatureService, this.humidityService];
+		var informationService = new Service.AccessoryInformation();
+
+		informationService
+		.setCharacteristic(Characteristic.Name, this.name)
+		.setCharacteristic(Characteristic.Manufacturer, this.manufacturer)
+		.setCharacteristic(Characteristic.Model, this.model)
+		.setCharacteristic(Characteristic.SerialNumber, this.serial);
+		return [informationService, this.service];
 	}
 };

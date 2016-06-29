@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # homebridge-mqttswitch
 An homebridge plugin that create an HomeKit Switch accessory mapped on MQTT topics
 
@@ -26,6 +25,3 @@ Remember to configure the plugin in config.json in your home directory inside th
 	}
 
 Look for a sample config in [config.json example](https://github.com/ilcato/homebridge-mqttswitch/blob/master/config.json)
-=======
-# homebridge-mqttswitch
->>>>>>> ccb1cabded5ff18610dbe0fbea913173a0c3b092

@@ -5,7 +5,7 @@
         "port": 51826,
         "pin": "031-45-154"
     },
-
+    
     "description": "This is an example configuration file. You can use this as a template for creating your own configuration file.",
 
     "platforms": [
@@ -13,19 +13,17 @@
     "accessories": [
     	{
             "accessory": "mqttswitch",
-            "name": "ESP8266-Console",
- 	    	"model":"nodemcu",
- 	    	"manufacturer":"An00biS47",
- 	    	"serial":"00001",
-            "url": "mqtt://pi2.local:1883",
-			"username": "esp",
-            "password": "esp8266",
- 			"caption": "ESP8266",
+            "name": "PUT THE NAME OF YOUR SWITCH HERE",
+ 	    	"model":"MODEL",
+ 	    	"manufacturer":"MANUFACTURER",
+ 	    	"serial":"SERIAL NUMBER",
+            "url": "PUT URL OF THE BROKER HERE",
+			"username": "PUT USERNAME OF THE BROKER HERE",
+            		"password": "PUT PASSWORD OF THE BROKER HERE",
+ 			"caption": "PUT THE LABEL OF YOUR SWITCH HERE",
  			"topics": {
- 				"statusGet": 	"outTopic",
- 				"statusSet": 	"inTopic",
-                "temperature": 	"outTemp",
-                "humdity": 	    "outHum"
+ 				"statusGet": 	"PUT THE MQTT TOPIC FOR THE GETTING THE STATUS OF YOUR SWITCH HERE",
+ 				"statusSet": 	"PUT THE MQTT TOPIC FOR THE SETTING THE STATUS OF YOUR SWITCH HERE"
  			}
     	}
     ]
